@@ -1,20 +1,31 @@
 /*
-  ESP8266 AIR CONTROL - DEC/2022
-  https://github.com/michaelrmartins/Esp8266_air_control.git
+  ESP8266 AIR CONTROL - DEC/2022 by
+  Michael Martins / M1k3o.0
+  Github: https://github.com/michaelrmartins/Esp8266_air_control.git
 
       /*
-        
-
-
-
+       ============================================================= 
+       =         - This Project is still in development. -         =
+       =============================================================
       /*  
 
+-- - Changelog - --
+24/11/2022 - Create
+29/11/2022 - First Functions created
+01/12/2022 - Wifi Connection Success
+04/12/2022 - JSON Parse Success
+04/12/2022 - Zabbix API Connection Success
+19/12/2022 - Create Debug mensages in Serial Monitor
 */
 
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
+
+// Constants Module configs
+#define ESP_ID 01
+#define ESP_LOCATION "HEAA"
 
 // Wifi Settings
 #ifndef STASSID
@@ -68,7 +79,7 @@ void air_inverter()
   if ( invert_relay_counter >= time_to_inverter && relay_1_error == 0 && relay_2_error == 0){
 
     digitalWrite(relay_1_pin, !digitalRead(relay_1_pin));
-    delay(800);
+    delay(1300);
     digitalWrite(relay_2_pin, !digitalRead(relay_2_pin));
     invert_relay_counter = 1; // Reset Counter
 
@@ -110,9 +121,9 @@ float temp_read()
 void wifi_led_blink()
 {
   digitalWrite(LED_BUILTIN, LOW);
-  delay(800);
+  delay(250);
   digitalWrite(LED_BUILTIN, HIGH);
-  delay(800);
+  delay(250);
 }
 
 // Create an instance of the server and specify the port to listen on as an argument
@@ -194,6 +205,7 @@ void setup() {
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
 
+  /*
   while (WiFi.status() != WL_CONNECTED) {
     wifi_led_blink();
     Serial.print(F("."));
@@ -201,8 +213,9 @@ void setup() {
   Serial.println();
   Serial.println(F("WiFi connected"));
   digitalWrite(LED_BUILTIN, HIGH);  
+   */
 
-  // Start the server
+  // Start server
   server.begin();
   Serial.println(F("Server started"));
 
@@ -213,10 +226,19 @@ void setup() {
 // LOOP - Handler Functions ---------
 void loop() 
 {
-  // Check if a client has connected
+  // Check if client has connected
   WiFiClient client = server.available();
   if (!client) 
   {
+    // Wifi Check
+    if (WiFi.status() == WL_CONNECTED)
+    {
+       digitalWrite(LED_BUILTIN, HIGH);  
+    } 
+    else
+    {
+       wifi_led_blink();
+    }
     // OTA Handle
     ArduinoOTA.handle();
 
@@ -266,10 +288,10 @@ void loop()
   // client.print(F("HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n<!DOCTYPE HTML>\r\n<html>\r\nGPIO is now "));   // Original line
   client.print(F("HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n"));
   
-    // Create JSON File
+  // Create JSON File
   client.print("{"); // Open Json
-  client.println("\"ID\":\"01\",");
-  client.println("\"LOCATION\":\"HEAA\",");
+  client.println("\"ID\":\"" + String(ESP_ID) + "\",");
+  client.println("\"LOCATION\":\"" + String(ESP_LOCATION) + "\",");
   client.println("\"SENSOR_TEMP_1\":\"" + String(sensor_1_temp) + "\",");
   client.println("\"SENSOR_HUMIDITY_1\":\"" + String(sensor_1_humidity) + "\",");
   client.println("\"RELAY_1_STATUS\":\"" + String(relay_1_status) + "\",");
@@ -281,9 +303,9 @@ void loop()
   client.println("\"RELAY_3_ERROR\":\"" + String(relay_3_error) + "\",");
   client.println("\"RELAY_4_ERROR\":\"" + String(relay_4_error) + "\",");
   client.println("\"SSID_CONNECTED\":\"" + String(ssid) + "\",");
-  //client.println("\"IP_ADDRESS\":\"" + String(WiFi.localIP()) + "\"");
   client.println("\"WIFI_SIGNAL_RSSI\":\"" + String(WiFi.RSSI()) + "\",");
   client.println("\"TIME_COUNTER\":\"" + String(invert_relay_counter) + "\"");
+  //client.println("\"IP_ADDRESS\":\"" + String(WiFi.localIP()) + "\"")
   client.print("}"); // End Json
   
   // The client will actually be *flushed* then disconnected
