@@ -1,0 +1,13 @@
+
+
+---- Lista de componentes ---- 
+
+1 NodeMCU Esp8266 
+1 Sensor DTH22 ( temperatura e umidade )
+1 Módulo Relé de 4 canais com Optoacoplador
+2 Módulo Fonte 5V 3W - HLK-PM01
+10 Borne Duplo 5mm com Terminal
+4 Conector Header Femea 180° ( 40 pinos )
+1 Placa de fenolite 10x15 Perfurada
+
+
