@@ -1,0 +1,13 @@
+[
+	{
+		"ID":"01",
+		"LOCATION":"SECTOR",
+		"SENSOR_TEMP_1": "26",
+		"SENSOR_HUMIDITY_1": "30",
+		"RELAY_1_STATE":"0",
+		"RELAY_2_STATE":"0",
+		"RELAY_3_STATE":"0",
+		"RELAY_4_STATE":"0",
+		"ERROR_VALUE":"0"
+	}
+]
