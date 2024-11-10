@@ -9,6 +9,11 @@
        =============================================================
       /*  
 
+/*
+  == Hardware Map ==
+
+
+
 -- - Changelog - --
 24/11/2022 - Create
 29/11/2022 - First Functions created
@@ -43,7 +48,7 @@ const char* password = STAPSK;
 //Variables
 int i;
 int time_to_inverter = 86400;  // Time in seconds to inverter relays / 86400 = 24 horas
-int temperature_limit = 36;
+int temperature_limit = 30;
 unsigned int contador = 1;
 unsigned int invert_relay_counter = 1;
 const int analog_pin_1 = A0;
